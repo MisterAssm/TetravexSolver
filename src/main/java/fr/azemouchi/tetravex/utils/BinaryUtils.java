@@ -16,11 +16,16 @@ public class BinaryUtils {
 
             stringBuilderValue.append((n < 10 ? "0" + n : n));
 
-            if (stringBuilderValue.length() >= 4) {
+            if (stringBuilderValue.length() >= 2) {
                 stringBuilder.append(stringBuilderValue.toString()).append(" ");
 
-                if (stringBuilder.length() >= 40) {
-                    stringBuilderResult.append(stringBuilder.toString()).append(System.lineSeparator());
+                if (getLengthWithoutSpaces(stringBuilder) >= 16) {
+                    stringBuilderResult
+                            .append(stringBuilder
+                                    .append(" ".repeat(5))
+                                    .append(".".repeat(16))
+                                    .toString()
+                            ).append(System.lineSeparator());
                     stringBuilder.setLength(0);
                 }
 
@@ -34,37 +39,18 @@ public class BinaryUtils {
         }
 
         if (stringBuilder.length() > 0) {
-            stringBuilderResult.append(stringBuilder.toString()).append(System.lineSeparator());
+            stringBuilderResult
+                    .append(stringBuilder.append(" ".repeat(29 - stringBuilder.length())).toString())
+                    .append(".".repeat(16 - getLengthWithoutSpaces(stringBuilder)))
+                    .append(System.lineSeparator());
             stringBuilder.setLength(0);
         }
 
         return stringBuilderResult.toString();
     }
 
-    public static byte[] convertToHex(InputStream inputStream) throws IOException {
-
-        int value;
-        StringBuilder stringBuilderHex = new StringBuilder();
-
-        int n = 0;
-        int max = 1000000;
-
-        while ((value = inputStream.read()) != -1 && n++ < max) {
-            stringBuilderHex.append("0x")
-                    .append(String.format("%02X ", value));
-        }
-
-        String[] split = stringBuilderHex.toString().split("\\s+");
-
-        byte[] array = new byte[split.length];
-
-        for (int i = 0; i < split.length; i++) {
-            array[i] = (byte) (short) Short.decode(split[i]);
-        }
-
-        inputStream.close();
-
-        return array;
+    private static int getLengthWithoutSpaces(StringBuilder stringBuilder) {
+        return stringBuilder.toString().replaceAll("\\s+", "").length();
     }
 
 }

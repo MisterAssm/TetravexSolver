@@ -1,14 +1,16 @@
 package fr.azemouchi.tetravex;
 
-import fr.azemouchi.tetravex.utils.BinaryUtils;
+import fr.azemouchi.tetravex.exceptions.CannotResolveException;
 
-import java.io.*;
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, CannotResolveException {
 
         System.out.print('\0');
 
@@ -29,49 +31,26 @@ public class Main {
             while (Objects.nonNull(line = bufferedReader.readLine())) {
                 if (line.isEmpty()) break;
 
-                entry.append(line).append("\n");
+                entry.append(line)
+                        .append(System.lineSeparator());
             }
 
         }
 
-        String[] split = entry.toString().split("\\s+");
-        String[] split2 = new String[split.length * 2];
+        String[] split = entry.toString().replaceAll("\\.", "").split("\\s+");
+        byte[] bytes = new byte[split.length];
 
-        for (int i = 0; i < split.length; i++) {
-            String base = split[i];
-            int half = base.length() % 2 == 0 ? base.length() / 2 : base.length() / 2 + 1;
-            final String first = base.substring(0, half);
-            final String second = base.substring(half);
+        IntStream.range(0, split.length).forEachOrdered(i -> bytes[i] = Byte.parseByte(split[i], 16));
 
-            split2[i * 2] = first;
-            split2[i * 2 + 1] = second;
-        }
-
-        byte[] bytes = new byte[split2.length];
-
-        for (int i = 0; i < split2.length; i++) {
-            bytes[i] = Byte.parseByte(split2[i], 16);
-        }
-
-        InputStream inputStream = new ByteArrayInputStream(bytes);
-
-        final byte[] bytes2 = BinaryUtils.convertToHex(inputStream);
-
-        System.out.println("bytes2 = " + Arrays.toString(bytes2));
-
-        // Start with hex :
-        // new TetravexSolver("03859491596966746159186834119096040482");
-
-        /*
         Thread thread = new Thread(() -> {
             try {
-                new TetravexSolver(bytes2);
+                new TetravexSolver(bytes);
             } catch (CannotResolveException e) {
                 e.printStackTrace();
             }
         });
 
-        thread.start();*/
+        thread.start();
 
     }
 
