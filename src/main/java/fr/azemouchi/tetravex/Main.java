@@ -1,21 +1,16 @@
 package fr.azemouchi.tetravex;
 
-import fr.azemouchi.tetravex.exceptions.CannotResolveException;
 import fr.azemouchi.tetravex.utils.BinaryUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.Objects;
 
 public class Main {
 
-    public static void main(String[] args) throws CannotResolveException, IOException {
+    public static void main(String[] args) throws IOException {
 
         System.out.print('\0');
-
-        Scanner scanner = new Scanner(System.in);
 
         System.out.print("Veuillez saisir les données de la partie sous la forme suivante : TTABCD" +
                 "\n T : largeur du plateau, sur un entier 16 bits non signé (big endian, valeurs possibles : 1 à 65535) ;" +
@@ -28,16 +23,16 @@ public class Main {
 
         StringBuilder entry = new StringBuilder();
 
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if (line.equalsIgnoreCase("solve")) {
-                break;
-            } else {
-                entry.append(line).append(System.lineSeparator());
-            }
-        }
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in))) {
 
-        scanner.close();
+            String line;
+            while (Objects.nonNull(line = bufferedReader.readLine())) {
+                if (line.isEmpty()) break;
+
+                entry.append(line).append("\n");
+            }
+
+        }
 
         String[] split = entry.toString().split("\\s+");
         String[] split2 = new String[split.length * 2];
@@ -62,9 +57,12 @@ public class Main {
 
         final byte[] bytes2 = BinaryUtils.convertToHex(inputStream);
 
+        System.out.println("bytes2 = " + Arrays.toString(bytes2));
+
         // Start with hex :
         // new TetravexSolver("03859491596966746159186834119096040482");
 
+        /*
         Thread thread = new Thread(() -> {
             try {
                 new TetravexSolver(bytes2);
@@ -73,7 +71,7 @@ public class Main {
             }
         });
 
-        thread.start();
+        thread.start();*/
 
     }
 

@@ -1,23 +1,23 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Objects;
 
 public class ScannerTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in))) {
 
-        StringBuilder entry = new StringBuilder();
-        Scanner scanner = new Scanner(System.in);
+            StringBuilder entry = new StringBuilder();
+            String line;
+            while (Objects.nonNull(line = bufferedReader.readLine())) {
+                if (line.isEmpty()) break;
 
-        while (scanner.hasNextLine()) {
-            if (scanner.nextLine().equalsIgnoreCase("solve")) {
-                break;
-            } else {
-                entry.append(scanner.nextLine()).append(System.lineSeparator());
+                entry.append(line).append("\n");
             }
-        }
 
-        scanner.close();
-        System.out.println(entry);
+        }
+//        System.out.println(input);
     }
 
 
